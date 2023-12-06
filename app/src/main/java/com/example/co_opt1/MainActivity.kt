@@ -19,7 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.dp
 import com.example.co_opt1.ui.theme.RetrofitInstance
-
+import androidx.compose.material3.CircularProgressIndicator
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 
 class MainActivity : ComponentActivity() {
@@ -48,27 +49,30 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            // Pass the myData parameter to DisplayJsonData
-            DisplayJsonData(products)
+            // Show loading state while data is being fetched
+            if (products == null) {
+                CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(16.dp))
+            } else {
+                DisplayJsonData(products)
+            }
         }
     }
+
 
     @Composable
     fun DisplayJsonData(data: Products?) {
         LazyColumn {
             items(data?.products ?: emptyList()) { product ->
-                if (product.title.isNotEmpty()) {
-                    val name = product.title
-                    val description = product.description
-                    val price = product.price
+                // Safely access properties of product
+                    val name = product.title ?: ""
+                    val description = product.description ?: ""
+                    val price = product.price ?: ""
 
                     Text(
                         text = "$name: $description. $name is priced at $price.",
                         modifier = Modifier.padding(16.dp) // Adjust padding as needed
                     )
-                } else {
-                    Text(text = "No products were found.")
-                }
+
             }
         }
 
